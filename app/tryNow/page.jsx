@@ -11,53 +11,63 @@ const TryNowPage = () => {
   const [dragActive, setDragActive] = useState(false);
 
   // Simulate AI analysis with different results
-  const simulateAnalysis = useCallback(() => {
-    setIsAnalyzing(true);
+const simulateAnalysis = useCallback(() => {
+  setIsAnalyzing(true);
+  
+  // Simulate API call delay
+  setTimeout(() => {
+    const results = [
+      {
+        type: 'NSCLC (Non-Small Cell Carcinoma)',
+        confidence: 94.7,
+        severity: 'High Risk',
+        color: 'from-red-500 to-pink-600',
+        bgColor: 'bg-red-500/10',
+        borderColor: 'border-red-500/30',
+        icon: '🔴',
+        recommendation: 'Immediate medical consultation required. Early stage NSCLC detected with high confidence.',
+        details: 'Non-small cell lung carcinoma represents 85% of lung cancer cases. Early detection significantly improves treatment outcomes.'
+      },
+      {
+        type: 'SCLC (Small Cell Carcinoma)',
+        confidence: 89.3,
+        severity: 'Critical Risk',
+        color: 'from-orange-500 to-red-600',
+        bgColor: 'bg-orange-500/10',
+        borderColor: 'border-orange-500/30',
+        icon: '🟡',
+        recommendation: 'Urgent medical attention required. Aggressive form of lung cancer detected.',
+        details: 'Small cell lung carcinoma is more aggressive and spreads quickly. Immediate intervention is crucial.'
+      },
+      {
+        type: 'Benign Tissue',
+        confidence: 96.8,
+        severity: 'No Risk',
+        color: 'from-green-500 to-emerald-600',
+        bgColor: 'bg-green-500/10',
+        borderColor: 'border-green-500/30',
+        icon: '🟢',
+        recommendation: 'No cancerous tissue detected. Continue regular health screenings.',
+        details: 'Tissue appears normal with no signs of malignancy. Regular monitoring recommended.'
+      }
+    ];
     
-    // Simulate API call delay
-    setTimeout(() => {
-      const results = [
-        {
-          type: 'NSCLC (Non-Small Cell Carcinoma)',
-          confidence: 94.7,
-          severity: 'High Risk',
-          color: 'from-red-500 to-pink-600',
-          bgColor: 'bg-red-500/10',
-          borderColor: 'border-red-500/30',
-          icon: '🔴',
-          recommendation: 'Immediate medical consultation required. Early stage NSCLC detected with high confidence.',
-          details: 'Non-small cell lung carcinoma represents 85% of lung cancer cases. Early detection significantly improves treatment outcomes.'
-        },
-        {
-          type: 'SCLC (Small Cell Carcinoma)',
-          confidence: 89.3,
-          severity: 'Critical Risk',
-          color: 'from-orange-500 to-red-600',
-          bgColor: 'bg-orange-500/10',
-          borderColor: 'border-orange-500/30',
-          icon: '🟡',
-          recommendation: 'Urgent medical attention required. Aggressive form of lung cancer detected.',
-          details: 'Small cell lung carcinoma is more aggressive and spreads quickly. Immediate intervention is crucial.'
-        },
-        {
-          type: 'Benign Tissue',
-          confidence: 96.8,
-          severity: 'No Risk',
-          color: 'from-green-500 to-emerald-600',
-          bgColor: 'bg-green-500/10',
-          borderColor: 'border-green-500/30',
-          icon: '🟢',
-          recommendation: 'No cancerous tissue detected. Continue regular health screenings.',
-          details: 'Tissue appears normal with no signs of malignancy. Regular monitoring recommended.'
-        }
-      ];
+    // Determine result based on file name
+    let resultIndex = 2; // Default to Benign
+    if (uploadedImage) {
+      const fileName = uploadedImage.name.toLowerCase();
       
-      // Randomly select a result for demo
-      const randomResult = results[Math.floor(Math.random() * results.length)];
-      setAnalysisResult(randomResult);
-      setIsAnalyzing(false);
-    }, 3000);
-  }, []);
+      if (fileName.includes('squamous')) {
+        resultIndex = 0; // NSCLC
+      } else if (fileName.includes('oat')) {
+        resultIndex = 1; // SCLC
+      }
+    }
+    
+    setAnalysisResult(results[resultIndex]);
+    setIsAnalyzing(false);
+  }, 3000);
+}, [uploadedImage]); // Add uploadedImage to dependencies
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
